@@ -28,11 +28,11 @@ namespace PLC.Commissioning.Lib.Abstractions
         object ImportDevice(string filePath);
 
         /// <summary>
-        /// Saves project under specified directory path 
+        /// Saves the current project to a specific Documents/Openness/Saved_Projects/ directory.
         /// </summary>
-        /// <param name="dirPath"></param>
-        /// <returns></returns>
-        bool SaveProjectAs(string dirPath);
+        /// <param name="projectName">The name of the project.</param>
+        /// <returns><c>true</c> if the project was saved successfully; otherwise, <c>false</c>.</returns>
+        bool SaveProjectAs(string projectName);
 
         /// <summary>
         /// Retrieves device parameters for a specified module.
