@@ -21,11 +21,12 @@ namespace PLC.Commissioning.Lib.Abstractions
         bool Initialize(bool safety);
 
         /// <summary>
-        /// Imports a device or multiple devices configuration into the Siemens PLC project.
+        /// Imports one or more devices into the Siemens PLC project.
         /// </summary>
         /// <param name="filePath">The path to the device configuration file.</param>
-        /// <returns>A dictionary with device names as keys and corresponding objects as values, or <c>null</c> if the import fails.</returns>
-        object ImportDevice(string filePath);
+        /// <param name="gsdmlFiles">List of available GSDML files for mapping.</param>
+        /// <returns>A dictionary with device names as keys and corresponding ImportedDevice objects as values, or <c>null</c> if the import fails.</returns>
+        Dictionary<string, object> ImportDevices(string filePath, List<string> gsdmlFiles);
 
         /// <summary>
         /// Saves project under specified directory path 
@@ -38,23 +39,21 @@ namespace PLC.Commissioning.Lib.Abstractions
         /// Retrieves device parameters for a specified module.
         /// </summary>
         /// <param name="device">The device object to retrieve parameters for.</param>
-        /// <param name="gsdFilePath">The file path to the GSD file.</param>
         /// <param name="moduleName">The name of the module to retrieve parameters for.</param>
         /// <param name="parameterSelections">Optional list of parameters to retrieve.</param>
         /// <param name="safety">Indicates whether safety parameters are required.</param>
         /// <returns><c>true</c> if the parameters were retrieved successfully; otherwise, <c>false</c>.</returns>
-        bool GetDeviceParameters(object device, string gsdFilePath, string moduleName, List<string> parameterSelections = null, bool safety = false);
+        bool GetDeviceParameters(object device, string moduleName, List<string> parameterSelections = null, bool safety = false);
 
         /// <summary>
         /// Sets device parameters for a specified module.
         /// </summary>
         /// <param name="device">The device object to configure.</param>
-        /// <param name="gsdFilePath">The file path to the GSD file.</param>
         /// <param name="moduleName">The name of the module to configure.</param>
         /// <param name="parametersToSet">A dictionary of parameters to set.</param>
         /// <param name="safety">Indicates whether safety parameters are being set.</param>
         /// <returns><c>true</c> if the parameters were set successfully; otherwise, <c>false</c>.</returns>
-        bool SetDeviceParameters(object device, string gsdFilePath, string moduleName, Dictionary<string, object> parametersToSet, bool safety = false);
+        bool SetDeviceParameters(object device, string moduleName, Dictionary<string, object> parametersToSet, bool safety = false);
 
         /// <summary>
         /// Compiles the project
