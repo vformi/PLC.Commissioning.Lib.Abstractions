@@ -1,82 +1,122 @@
 ﻿using System;
 using System.Collections.Generic;
+using FluentResults;
 
 namespace PLC.Commissioning.Lib.Abstractions
 {
+    /// <summary>
+    /// General interface for a PLC controller.
+    /// </summary>
     public interface IPLCController : IDisposable
     {
         /// <summary>
-        /// Configures the connection and network interface.
+        /// Configures the connection and network interface using a JSON configuration file.
         /// </summary>
-        /// <param name="jsonFilePath">The path to a JSON file containing the configuration settings.</param>
-        /// <returns>A boolean indicating if the configuration was successful.</returns>
-        bool Configure(string jsonFilePath);
+        /// <param name="jsonFilePath">
+        /// The path to the JSON file containing the configuration settings.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Result"/> indicating whether the configuration was successful.
+        /// On failure, the Result contains error details.
+        /// In case of failure, metadata "ErrorCode" is set to 
+        /// <see cref="OperationErrorCode.ConfigurationFailed"/>.
+        /// </returns>
+        Result Configure(string jsonFilePath);
 
         /// <summary>
-        /// Opens programming tool and initializes connection to the PLC.
+        /// Initializes the Siemens PLC controller in offline mode.
         /// </summary>
-        /// <param name="safety"> Indicates if we are working with Safety device or not</param>
-        /// <param name="debug"> Displays some debug information, network card info, device info etc</param>
-        /// <returns>A boolean indicating if the connection was successfully initialized.</returns>
-        bool Initialize(bool safety);
+        /// <param name="safety">Indicates whether safety mode is enabled.</param>
+        /// <returns>
+        /// A <see cref="Result"/> indicating success or failure.
+        /// On failure, metadata "ErrorCode" is set to <see cref="OperationErrorCode.InitializationFailed"/>.
+        /// </returns>
+        Result Initialize(bool safety);
 
         /// <summary>
-        /// Imports one or more devices into the Siemens PLC project.
+        /// Imports one or more devices into an industrial automation project (e.g., PROFINET, EtherNet/IP, or EtherCAT).
         /// </summary>
         /// <param name="filePath">The path to the device configuration file.</param>
-        /// <param name="gsdmlFiles">List of available GSDML files for mapping.</param>
-        /// <returns>A dictionary with device names as keys and corresponding ImportedDevice objects as values, or <c>null</c> if the import fails.</returns>
-        Dictionary<string, object> ImportDevices(string filePath, List<string> gsdmlFiles);
+        /// <param name="descriptionFiles">
+        /// A list of relevant device description files (e.g., GSDML, EDS, ESI) used for mapping.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Result{T}"/> containing a dictionary of imported devices if successful.
+        /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.ImportFailed"/>.
+        /// </returns>
+        Result<Dictionary<string, object>> ImportDevices(string filePath, List<string> descriptionFiles);
 
         /// <summary>
-        /// Saves project under specified directory path 
+        /// Saves the current project to a specific Documents/Openness/Saved_Projects/ directory.
         /// </summary>
-        /// <param name="dirPath"></param>
-        /// <returns></returns>
-        bool SaveProjectAs(string dirPath);
+        /// <param name="projectName">The name of the project.</param>
+        /// <returns>
+        /// A <see cref="Result"/> indicating success or failure.
+        /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.SaveProjectFailed"/>.
+        /// </returns>
+        Result SaveProjectAs(string dirPath);
 
         /// <summary>
         /// Retrieves device parameters for a specified module.
         /// </summary>
-        /// <param name="device">The device object to retrieve parameters for.</param>
+        /// <param name="device">The device object to retrieve parameters from (must be an ImportedDevice).</param>
         /// <param name="moduleName">The name of the module to retrieve parameters for.</param>
-        /// <param name="parameterSelections">Optional list of parameters to retrieve.</param>
+        /// <param name="parameterSelections">An optional list of parameters to retrieve.</param>
         /// <param name="safety">Indicates whether safety parameters are required.</param>
-        /// <returns><c>true</c> if the parameters were retrieved successfully; otherwise, <c>false</c>.</returns>
-        bool GetDeviceParameters(object device, string moduleName, List<string> parameterSelections = null, bool safety = false);
+        /// <returns>
+        /// A <see cref="Result"/> indicating success or failure. 
+        /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.GetParametersFailed"/>.
+        /// </returns>
+        Result GetDeviceParameters(object device, string moduleName, List<string> parameterSelections = null, bool safety = false);
 
         /// <summary>
         /// Sets device parameters for a specified module.
         /// </summary>
-        /// <param name="device">The device object to configure.</param>
+        /// <param name="device">The device object to configure (must be an ImportedDevice).</param>
         /// <param name="moduleName">The name of the module to configure.</param>
         /// <param name="parametersToSet">A dictionary of parameters to set.</param>
         /// <param name="safety">Indicates whether safety parameters are being set.</param>
-        /// <returns><c>true</c> if the parameters were set successfully; otherwise, <c>false</c>.</returns>
-        bool SetDeviceParameters(object device, string moduleName, Dictionary<string, object> parametersToSet, bool safety = false);
+        /// <returns>
+        /// A <see cref="Result"/> indicating success or failure.
+        /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.SetParametersFailed"/>.
+        /// </returns>
+        Result SetDeviceParameters(object device, string moduleName, Dictionary<string, object> parametersToSet, bool safety = false);
 
         /// <summary>
-        /// Compiles the project
+        /// Compiles the current PLC project.
         /// </summary>
-        /// <returns></returns>
-        bool Compile();
+        /// <returns>
+        /// A <see cref="Result"/> indicating success or failure.
+        /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.CompileFailed"/>.
+        /// </returns>
+        Result Compile();
 
         /// <summary>
-        /// Downloads the project
+        /// Downloads the PLC project to the PLC device.
         /// </summary>
-        /// <returns></returns>
-        bool Download(object downloadOptions);
+        /// <param name="options">Options for the download process.</param>
+        /// <returns>
+        /// A <see cref="Result"/> indicating success or failure.
+        /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.DownloadFailed"/>.
+        /// </returns>
+        Result Download(object downloadOptions);
 
         /// <summary>
         /// Starts the PLC.
         /// </summary>
-        /// <returns>A boolean indicating if the PLC started successfully.</returns>
-        bool Start();
+        /// <returns>
+        /// A <see cref="Result"/> indicating success or failure.
+        /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.StartFailed"/>.
+        /// </returns>
+        Result Start();
 
         /// <summary>
         /// Stops the PLC.
         /// </summary>
-        /// <returns>A boolean indicating if the PLC stopped successfully.</returns>
-        bool Stop();
+        /// <returns>
+        /// A <see cref="Result"/> indicating success or failure.
+        /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.StopFailed"/>.
+        /// </returns>
+        Result Stop();
     }
 }
