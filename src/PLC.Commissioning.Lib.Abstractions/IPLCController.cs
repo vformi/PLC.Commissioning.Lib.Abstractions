@@ -59,15 +59,22 @@ namespace PLC.Commissioning.Lib.Abstractions
         /// <summary>
         /// Retrieves device parameters for a specified module.
         /// </summary>
-        /// <param name="device">The device object to retrieve parameters from (must be an ImportedDevice).</param>
+        /// <param name="device">
+        ///   The device object to retrieve parameters from (must be an <see cref="ImportedDevice"/>).
+        /// </param>
         /// <param name="moduleName">The name of the module to retrieve parameters for.</param>
-        /// <param name="parameterSelections">An optional list of parameters to retrieve.</param>
+        /// <param name="parameterSelections">
+        ///   An optional list of parameter names to retrieve. If <c>null</c> or empty, all parameters are retrieved.
+        /// </param>
         /// <param name="safety">Indicates whether safety parameters are required.</param>
         /// <returns>
-        /// A <see cref="Result"/> indicating success or failure. 
-        /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.GetParametersFailed"/>.
+        ///   A <see cref="Result{T}"/> containing a <see cref="Dictionary{String, Object}"/> of retrieved parameters on success.
+        ///   On failure, the result is <see cref="Result.Fail{Dictionary{String, Object}}"/>, and the Error's metadata 
+        ///   <c>"ErrorCode"</c> is set to <see cref="OperationErrorCode.GetParametersFailed"/>.
+        ///   <para/>
         /// </returns>
-        Result GetDeviceParameters(object device, string moduleName, List<string> parameterSelections = null, bool safety = false);
+        Result<Dictionary<string, object>> GetDeviceParameters(object device, string moduleName, List<string> parameterSelections = null, bool safety = false);
+
 
         /// <summary>
         /// Sets device parameters for a specified module.
