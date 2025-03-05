@@ -9,14 +9,18 @@
         ConfigurationFailed,
         InitializationFailed,
         ImportFailed,
-        SaveProjectFailed,
         GetParametersFailed,
         SetParametersFailed,
         CompileFailed,
         DownloadFailed,
         StartFailed,
         StopFailed,
+        
+        // Siemens specific
+        SaveProjectFailed,
         DeleteDeviceFailed,
-        // Add more error codes as needed
+        ReadTagTablesFailed,
+        ExportFailed,
+        GetDeviceFailed
     }
 }

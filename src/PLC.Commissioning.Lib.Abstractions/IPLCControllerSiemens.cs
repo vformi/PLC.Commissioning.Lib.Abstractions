@@ -101,5 +101,11 @@ namespace PLC.Commissioning.Lib.Abstractions
         /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.DeleteDeviceFailed"/>.
         /// </returns>
         Result DeleteDevice(object device);
+
+        /// <summary>
+        /// Reads and returns all PLC tag tables.
+        /// </summary>
+        /// <returns>A list of tag table names.</returns>
+        Result<Dictionary<string, List<string>>> ReadPLCTagTables();
     }
 }
