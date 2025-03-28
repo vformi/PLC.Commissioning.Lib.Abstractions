@@ -37,14 +37,11 @@ namespace PLC.Commissioning.Lib.Abstractions
         /// Imports one or more devices into an industrial automation project (e.g., PROFINET, EtherNet/IP, or EtherCAT).
         /// </summary>
         /// <param name="filePath">The path to the device configuration file.</param>
-        /// <param name="descriptionFiles">
-        /// A list of relevant device description files (e.g., GSDML, EDS, ESI) used for mapping.
-        /// </param>
         /// <returns>
         /// A <see cref="Result{T}"/> containing a dictionary of imported devices if successful.
         /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.ImportFailed"/>.
         /// </returns>
-        Result<Dictionary<string, object>> ImportDevices(string filePath, List<string> descriptionFiles);
+        Result<Dictionary<string, object>> ImportDevices(string filePath);
 
         /// <summary>
         /// Saves the current project to a specific Documents/Openness/Saved_Projects/ directory.

@@ -36,9 +36,9 @@ namespace PLC.Commissioning.Lib.Abstractions
         /// On failure, the Error's metadata "ErrorCode" is <see cref="OperationErrorCode.GetParametersFailed"/>.
         /// </returns>
         /// <remarks>
-        /// Ensure that the returned object is cast to the <see cref="Device"/> type by the caller.
+        /// Ensure that the returned object is cast to the <see cref="ProjectDevice"/> type by the caller.
         /// </remarks>
-        Result<object> GetDeviceByName(string device);
+        Result<object> GetDeviceByName(string deviceName);
 
         /// <summary>
         /// Imports additional items such as PLC tags or other helper files into the project.
